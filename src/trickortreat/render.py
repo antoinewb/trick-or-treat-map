@@ -11,8 +11,17 @@ from .geocode import Located
 ORANGE = "#ff7518"
 TEAL = "#1fb5ac"
 
-# Inverts the standard OSM tiles into a night-time look without needing a
-# keyed dark tile service. Markers and popups aren't affected.
+# Esri's street map loads from a map.html opened straight off disk or from an
+# email attachment. OpenStreetMap's own tile servers block those requests
+# (no Referer header) and show "403 Access blocked" tiles instead.
+TILES_URL = (
+    "https://server.arcgisonline.com/ArcGIS/rest/services/"
+    "World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+)
+TILES_ATTR = "Tiles &copy; Esri &mdash; Sources: Esri, HERE, Garmin, OpenStreetMap contributors"
+
+# Inverts the street map into a night-time look without needing a keyed dark
+# tile service. Markers and popups aren't affected.
 DARK_TILES_CSS = """
 <style>.leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.85) contrast(.9); }</style>
 """
@@ -64,8 +73,8 @@ def build_map(
     if not spots:
         raise ValueError("No houses to put on the map.")
 
-    # Folium adds the "© OpenStreetMap contributors" credit for these tiles.
-    fmap = folium.Map(tiles="OpenStreetMap", control_scale=True)
+    fmap = folium.Map(tiles=None, control_scale=True)
+    folium.TileLayer(tiles=TILES_URL, attr=TILES_ATTR, name="Streets", max_zoom=19).add_to(fmap)
     for spot in spots:
         folium.Marker(
             location=(spot.lat, spot.lon),

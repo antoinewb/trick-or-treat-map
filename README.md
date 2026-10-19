@@ -63,7 +63,7 @@ copied from Google Maps (right-click → click the coordinates).
 The map shows only what neighbors agreed to share. For a public link,
 consider `show_addresses = false` in `config.toml`.
 
-Map data © OpenStreetMap contributors.
+Map tiles © Esri. Address lookup and map data © OpenStreetMap contributors.
 
 ## Development
 

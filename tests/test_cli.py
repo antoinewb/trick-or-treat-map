@@ -33,6 +33,9 @@ cache = "{(tmp_path / 'cache.json').as_posix()}"
     assert "The Garcias" not in html  # declined consent
     assert "123 Elm St" not in html  # show_addresses = false
     assert "Elm &lt;Street&gt; 2026" in html
+    # OSM's tile servers block pages opened from disk; see render.TILES_URL.
+    assert "tile.openstreetmap.org" not in html
+    assert "server.arcgisonline.com" in html
     assert "Mapped 2 houses" in capsys.readouterr().out
 
 
