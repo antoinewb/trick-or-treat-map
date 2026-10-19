@@ -68,6 +68,7 @@ def load_responses(path: Path, columns: dict[str, str] | None = None) -> LoadRes
     with open(path, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         headers = reader.fieldnames or []
+        columns = _match_headers(columns, headers)
         _check_columns(columns, headers)
 
         def get(row: dict[str, str], key: str) -> str:
@@ -102,6 +103,20 @@ def load_responses(path: Path, columns: dict[str, str] | None = None) -> LoadRes
         else:
             result.no_consent += 1
     return result
+
+
+def _header_key(title: str) -> str:
+    return " ".join(title.lower().split())
+
+
+def _match_headers(columns: dict[str, str], headers: list[str]) -> dict[str, str]:
+    """Point each configured title at the CSV header that matches it, ignoring case
+    and spacing, so small edits to a question title ("OK" vs "Ok") still work."""
+    by_key = {_header_key(h): h for h in headers}
+    return {
+        key: by_key.get(_header_key(title), title) if title else title
+        for key, title in columns.items()
+    }
 
 
 def _check_columns(columns: dict[str, str], headers: list[str]) -> None:

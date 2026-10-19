@@ -56,6 +56,16 @@ def test_custom_columns_and_consent_off(tmp_path):
     assert result.houses[0].name == "Lees"
 
 
+def test_column_titles_ignore_case_and_spacing(tmp_path):
+    path = write_csv(
+        tmp_path,
+        "Street Address , ok to put your house on the shared  neighborhood map?\n"
+        "5 Oak Ave,Yes\n",
+    )
+    result = load_responses(path)
+    assert [h.address for h in result.houses] == ["5 Oak Ave"]
+
+
 def test_missing_required_column_lists_headers(tmp_path):
     path = write_csv(tmp_path, "Address,Consent\n4 Oak Ave,Yes\n")
     with pytest.raises(ColumnError) as err:
