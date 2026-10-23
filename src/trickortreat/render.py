@@ -16,7 +16,7 @@ TEAL = "#1fb5ac"
 # one or two houses zooms all the way in and hides the surrounding blocks.
 MAX_FIT_ZOOM = 17
 
-# Esri's street map loads from a map.html opened straight off disk or from an
+# Esri's street map loads from a map file opened straight off disk or from an
 # email attachment. OpenStreetMap's own tile servers block those requests
 # (no Referer header) and show "403 Access blocked" tiles instead.
 TILES_URL = (
@@ -115,5 +115,9 @@ def build_map(
         fmap.get_root().header.add_child(folium.Element(f"<title>{escape(title)}</title>"))
     if dark:
         fmap.get_root().header.add_child(folium.Element(DARK_TILES_CSS))
+    # The map is shared by link and holds neighbors' locations; keep it out of search results.
+    fmap.get_root().header.add_child(
+        folium.Element('<meta name="robots" content="noindex, nofollow">')
+    )
     fmap.get_root().html.add_child(folium.Element(LEGEND))
     return fmap

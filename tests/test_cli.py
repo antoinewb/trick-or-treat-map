@@ -27,7 +27,8 @@ cache = "{(tmp_path / 'cache.json').as_posix()}"
     code = main([str(SAMPLE), "-c", str(config), "-o", str(out)], lookup=known.get)
 
     assert code == 0
-    html = (out / "map.html").read_text()
+    # index.html so hosts like Netlify serve it at the site's root URL.
+    html = (out / "index.html").read_text(encoding="utf-8")
     assert "The Smiths" in html
     assert "Haunted garage 6-9pm" in html
     assert "The Garcias" not in html  # declined consent
@@ -36,6 +37,7 @@ cache = "{(tmp_path / 'cache.json').as_posix()}"
     # OSM's tile servers block pages opened from disk; see render.TILES_URL.
     assert "tile.openstreetmap.org" not in html
     assert "server.arcgisonline.com" in html
+    assert '<meta name="robots" content="noindex, nofollow">' in html
     assert "Mapped 2 houses" in capsys.readouterr().out
 
 

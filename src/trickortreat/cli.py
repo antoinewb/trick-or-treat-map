@@ -82,7 +82,8 @@ def main(argv: list[str] | None = None, lookup: Lookup | None = None) -> int:
         dark=map_cfg.get("dark", True),
     )
     args.out.mkdir(parents=True, exist_ok=True)
-    out_file = args.out / "map.html"
+    # index.html so hosts like Netlify serve the map at the site's root URL.
+    out_file = args.out / "index.html"
     fmap.save(out_file)
     print(f"\nMapped {len(located)} houses -> {out_file}")
     return 0

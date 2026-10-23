@@ -1,7 +1,7 @@
 # Trick-or-Treat Map
 
 Neighbors sign up through a Google Form. This tool turns the responses into
-an interactive map you can send back to them: one `map.html` file that opens in
+an interactive map you can send back to them: one `index.html` file that opens in
 any browser, including on phones.
 
 - Orange markers for houses handing out treats, teal for allergy-friendly
@@ -34,7 +34,7 @@ Create the form by following [docs/google-form.md](docs/google-form.md).
    trickortreat data/responses.csv
    ```
 
-3. Open `output/map.html` and check that every pin is in the right place.
+3. Open `output/index.html` and check that every pin is in the right place.
 
 Example output:
 
@@ -45,7 +45,7 @@ Could not find 1 address(es); fix the spelling or add them under
 [overrides] in config.toml as  "<address>" = [lat, lon]:
   - 12 Hidden Ln
 
-Mapped 13 houses -> output/map.html
+Mapped 13 houses -> output/index.html
 ```
 
 Addresses are looked up through OpenStreetMap at one per second and cached in
@@ -55,10 +55,21 @@ copied from Google Maps (right-click → click the coordinates).
 
 ## Sharing
 
-- **Send the file**: attach `map.html` to an email or group chat.
-- **One link that stays current**: publish it with GitHub Pages or
-  [Netlify Drop](https://app.netlify.com/drop) and send the link once.
-  Re-upload as new sign-ups come in.
+**One link that stays current (recommended):** host it on
+[Netlify](https://www.netlify.com/).
+
+1. First time: sign up for a free account, go to **Sites → Add new site →
+   Deploy manually**, and drag the whole `output` folder onto the page.
+2. **Site configuration → Change site name** to something like
+   `bliss-meadows-halloween`. Your link is `https://<name>.netlify.app`.
+3. To update: rebuild, open the site's **Deploys** tab, and drag the `output`
+   folder in again. The link stays the same.
+
+The page tells search engines not to list it, but anyone with the link can
+open it. Past versions are visible only in your Netlify dashboard.
+
+**Send the file:** attach `output/index.html` to an email or group chat. The
+locate-me button only works if it's opened in a browser, not an app's preview.
 
 The map shows only what neighbors agreed to share. For a public link,
 consider `show_addresses = false` in `config.toml`.
