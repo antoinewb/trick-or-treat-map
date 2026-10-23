@@ -5,11 +5,16 @@ from __future__ import annotations
 from html import escape
 
 import folium
+from folium.plugins import LocateControl
 
 from .geocode import Located
 
 ORANGE = "#ff7518"
 TEAL = "#1fb5ac"
+
+# Closest zoom when fitting the map to the houses. Without a cap, a map with
+# one or two houses zooms all the way in and hides the surrounding blocks.
+MAX_FIT_ZOOM = 17
 
 # Esri's street map loads from a map.html opened straight off disk or from an
 # email attachment. OpenStreetMap's own tile servers block those requests
@@ -85,7 +90,18 @@ def build_map(
 
     lats = [s.lat for s in spots]
     lons = [s.lon for s in spots]
-    fmap.fit_bounds([(min(lats), min(lons)), (max(lats), max(lons))], padding=(30, 30))
+    fmap.fit_bounds(
+        [(min(lats), min(lons)), (max(lats), max(lons))], padding=(30, 30), max_zoom=MAX_FIT_ZOOM
+    )
+
+    # Blue dot for the viewer's own position. Browsers ask permission first and
+    # only allow it on https:// pages or files opened from disk.
+    LocateControl(
+        position="topleft",
+        flyTo=True,
+        keepCurrentZoomLevel=True,
+        strings={"title": "Show my location"},
+    ).add_to(fmap)
 
     if title:
         fmap.get_root().html.add_child(
